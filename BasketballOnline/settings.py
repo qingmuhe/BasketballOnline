@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'BasketballOnline.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cbo',
+        'HOST': 'localhost', # 数据库地址，本机 ip 地址 localhost
+        'PORT': 3306, # 端口
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': 'GEkai1234', # 数据库密码
     }
 }
 
