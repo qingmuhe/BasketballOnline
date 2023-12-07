@@ -22,4 +22,5 @@ from cbo import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dynamic/search/blogrecom_req', views.blogrecom_req),
+    path('dynamic/userhandle/register', views.rigister),
 ]

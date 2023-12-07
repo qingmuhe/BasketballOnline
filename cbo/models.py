@@ -22,32 +22,6 @@ from django.db import models
 #  `updatedAt` DATETIME NOT NULL,
 #  PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB;
-class User(AbstractUser):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField('姓名', max_length=50, default='匿名用户')
-    introduce = models.TextField('简介', default='暂无介绍')
-    company = models.CharField('公司', max_length=100, default='暂无信息')
-    profession = models.CharField('职业', max_length=100, default='暂无信息')
-    address = models.CharField('住址', max_length=100, default='暂无信息')
-    telephone = models.CharField('电话', max_length=11, default='暂无信息')
-    wx = models.CharField('微信', max_length=50, default='暂无信息')
-    qq = models.CharField('QQ', max_length=50, default='暂无信息')
-    wb = models.CharField('微博', max_length=100, default='暂无信息')
-    email = models.EmailField(unique=True, blank=True, null=True, verbose_name='邮箱')
-    photo = models.ImageField('头像', blank=True, upload_to='images/user/')
-    like = models.IntegerField('点赞数', default=0)
-    fans = models.IntegerField('粉丝数', default=0)
-    follow = models.IntegerField('关注数', default=0)
-    blog_num = models.IntegerField('博客数', default=0)
-
-    class Meta:
-        db_table = 'user'
-
-        # 设置返回值
-
-    def __str__(self):
-        return self.name
-
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -89,7 +63,38 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(username, email, password, **extra_fields)
+class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField('姓名', max_length=50, default='匿名用户')
+    introduce = models.TextField('简介', default='暂无介绍')
+    company = models.CharField('公司', max_length=100, default='暂无信息')
+    profession = models.CharField('职业', max_length=100, default='暂无信息')
+    address = models.CharField('住址', max_length=100, default='暂无信息')
+    telephone = models.CharField('电话', max_length=11, default='暂无信息')
+    wx = models.CharField('微信', max_length=50, default='暂无信息')
+    qq = models.CharField('QQ', max_length=50, default='暂无信息')
+    wb = models.CharField('微博', max_length=100, default='暂无信息')
+    email = models.EmailField(unique=True, blank=True, null=True, verbose_name='邮箱')
+    photo = models.ImageField('头像', blank=True, upload_to='images/user/')
+    like = models.IntegerField('点赞数', default=0)
+    fans = models.IntegerField('粉丝数', default=0)
+    follow = models.IntegerField('关注数', default=0)
+    blog_num = models.IntegerField('博客数', default=0)
 
+    objects = UserManager()
+
+    class Meta:
+        db_table = 'user'
+
+        # 设置返回值
+
+    def __str__(self):
+        return self.name
+
+
+
+
+UserManagerObject = UserManager()
 
 # CREATE TABLE IF NOT EXISTS `tableName` (
 #  `id` INTEGER NOT NULL auto_increment,
@@ -124,6 +129,7 @@ class Blog(models.Model):
     blog_recommand = models.IntegerField()
     createdAt = models.DateTimeField()
     updatedAt = models.DateTimeField()
+
 
     class Meta:
         db_table = 'blog'

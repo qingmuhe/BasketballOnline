@@ -44,7 +44,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -82,7 +82,7 @@ DATABASES = {
         'HOST': 'localhost', # 数据库地址，本机 ip 地址 localhost
         'PORT': 3306, # 端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': '123456He@', # 数据库密码
+        'PASSWORD': 'GEkai1234', # 数据库密码
     }
 }
 

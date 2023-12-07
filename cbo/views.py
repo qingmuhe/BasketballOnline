@@ -1,10 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from cbo.models import Blog
+from cbo.models import Blog, UserManagerObject
 from django.contrib import auth
 from django.contrib.auth.models import User
-
+from cbo.models import UserManager
+from cbo.models import User
 
 # Create your views here.
 # 获取博客推荐列表
@@ -35,3 +36,27 @@ def blogrecom_req(request):
         'success': "sucess",
         'echo_str': ''
     }, safe=False)
+
+
+def rigister(request):
+    if request.method == 'POST':
+        username = request.POST.get('user_name')
+        password = request.POST.get('passwd')
+        email = request.POST.get('email')
+
+        # 判断用户名是否已经存在
+        is_exists = User.objects.filter(username=username).first()
+        # print(is_exists)
+        if is_exists != None:
+            return JsonResponse({
+                'context': '',
+                'success': "fail",
+                'echo_str': '用户名已存在'
+            }, safe=False)
+        else:
+            User.objects.create_user(username=username, password=password, email=email)
+            return JsonResponse({
+                'context': '',
+                'success': "sucess",
+                'echo_str': '注册成功'
+            }, safe=False)
