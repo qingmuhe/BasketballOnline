@@ -82,7 +82,7 @@ DATABASES = {
         'HOST': 'localhost', # 数据库地址，本机 ip 地址 localhost
         'PORT': 3306, # 端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'GEkai1234', # 数据库密码
+        'PASSWORD': '123456He@', # 数据库密码
     }
 }
 
@@ -104,6 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# 将AUTH_USER_MODEL设置为自定义的用户模型cbo文件夹下models.py中的User类
+AUTH_USER_MODEL = 'cbo.User'
 
 
 # Internationalization

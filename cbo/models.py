@@ -1,3 +1,7 @@
+import uuid
+
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
@@ -18,24 +22,73 @@ from django.db import models
 #  `updatedAt` DATETIME NOT NULL,
 #  PRIMARY KEY (`id`)
 # ) ENGINE=InnoDB;
-class User(models.Model):
-    user_id = models.CharField(max_length=255, primary_key=True)
-    user_psd = models.CharField(max_length=255)
-    user_name = models.CharField(max_length=255)
-    user_info = models.CharField(max_length=255)
-    user_like = models.IntegerField()
-    user_fans = models.IntegerField()
-    user_follow = models.IntegerField()
-    user_img = models.CharField(max_length=255)
-    user_ip = models.CharField(max_length=255)
-    user_blog_num = models.IntegerField()
-    user_emial = models.CharField(max_length=255)
-    createdAt = models.DateTimeField()
-    updatedAt = models.DateTimeField()
+class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField('姓名', max_length=50, default='匿名用户')
+    introduce = models.TextField('简介', default='暂无介绍')
+    company = models.CharField('公司', max_length=100, default='暂无信息')
+    profession = models.CharField('职业', max_length=100, default='暂无信息')
+    address = models.CharField('住址', max_length=100, default='暂无信息')
+    telephone = models.CharField('电话', max_length=11, default='暂无信息')
+    wx = models.CharField('微信', max_length=50, default='暂无信息')
+    qq = models.CharField('QQ', max_length=50, default='暂无信息')
+    wb = models.CharField('微博', max_length=100, default='暂无信息')
+    email = models.EmailField(unique=True, blank=True, null=True, verbose_name='邮箱')
+    photo = models.ImageField('头像', blank=True, upload_to='images/user/')
+    like = models.IntegerField('点赞数', default=0)
+    fans = models.IntegerField('粉丝数', default=0)
+    follow = models.IntegerField('关注数', default=0)
+    blog_num = models.IntegerField('博客数', default=0)
 
     class Meta:
         db_table = 'user'
 
+        # 设置返回值
+
+    def __str__(self):
+        return self.name
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, username, email, password, **extra_fields):
+        """
+        使用给定的用户名、电子邮件和密码创建并保存用户。
+        """
+        # 如果没有username则抛出异常
+        if not username:
+            raise ValueError('The given username must be set')
+        # 标准化电子邮件，查看源码会发现是用@进行分割
+        email = self.normalize_email(email)
+        # 标准化用户名
+        username = self.model.normalize_username(username)
+        user = self.model(username=username, email=email, **extra_fields)
+        # 为用户设置密码，将纯文本密码转换为用于数据库存储的哈希值
+        user.set_password(password)
+        # 保存用户
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        # 设置is_staff默认值为False，is_superuser默认值为False
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email, password, **extra_fields):
+        # 设置is_staff默认值为True，is_superuser默认值为True
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        # 如果调用此方法，is_staff必须为True，否则会抛出异常
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        # 如果调用此方法，is_superuser必须为True，否则会抛出异常
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(username, email, password, **extra_fields)
 
 
 # CREATE TABLE IF NOT EXISTS `tableName` (
